@@ -7,10 +7,10 @@ const {
   signinWithGoogle,
   updateUser,
   deleteUser,
-  signOutUser
+  signOutUser,
+  getUsers,
 } = require("../controller/userController");
 const authenticateUser = require("../utils/authenticateUser");
-
 
 router.route("/signup").post(signup);
 router.route("/signin").post(signin);
@@ -19,5 +19,6 @@ router.route("/update/:userId").put(authenticateUser, updateUser);
 router.route("/delete/:userId").delete(authenticateUser, deleteUser);
 router.route("/sign-out").post(authenticateUser, signOutUser);
 
+router.route("/getUsers").get(authenticateUser, getUsers);
 
 module.exports = router;

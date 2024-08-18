@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
 import CreatePost from "./pages/CreatePost";
 import ErrorModal, { SuccessModal } from "./components/ErrorModal";
+import EditPost from "./pages/EditPost";
 function App() {
   return (
     <>
@@ -39,6 +40,15 @@ function App() {
           element={
             <PrivateRoute adminOnly>
               <CreatePost />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard/update-post/:postId"
+          element={
+            <PrivateRoute adminOnly>
+              <EditPost />
             </PrivateRoute>
           }
         />

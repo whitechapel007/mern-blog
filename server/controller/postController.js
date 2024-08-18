@@ -90,7 +90,32 @@ async function deletePosts(req, res, next) {
 
     res.status(200).json({ message: "the post has been deleted" });
   } catch (error) {
-    next(error );
+    next(error);
+  }
+}
+
+async function updatePost(req, res, next) {
+  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+    return next(errorHandler(403, "you are not allowed to update this post"));
+  }
+
+  try {
+    const updatePost = await Post.findByIdAndUpdate(
+      req.params.postId,
+      {
+        $set: {
+          title: req.body.title,
+          content: req.body.content,
+          category: req.body.category,
+          image: req.body.image,
+        },
+      },
+      { new: true }
+    );
+
+    res.status(200).json(updatePost);
+  } catch (error) {
+    next(error); 
   }
 }
 
@@ -98,4 +123,5 @@ module.exports = {
   createPost,
   getPosts,
   deletePosts,
+  updatePost,
 };

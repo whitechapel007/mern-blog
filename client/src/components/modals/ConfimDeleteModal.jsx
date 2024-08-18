@@ -38,8 +38,8 @@ const ConfimDeleteModal = ({ showModal, confirmText, onClick }) => {
 };
 
 ConfimDeleteModal.propTypes = {
-  showModal: PropTypes.boolean.isRequired,
+  showModal: PropTypes.bool,
   confirmText: PropTypes.string,
-  onClick: PropTypes.function,
+  onClick: PropTypes.func,
 };
 export default ConfimDeleteModal;

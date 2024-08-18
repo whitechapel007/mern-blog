@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import { useGetBlogsByUserIdQuery } from "../app/services/blogApi";
 
@@ -7,17 +7,25 @@ import { Table, Spinner } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import ConfimDeleteModal from "./modals/ConfimDeleteModal";
+import { closeModal, openModal } from "../app/modal/modalSlice";
+import { useDeletePostsMutation } from "../app/services/blogApi";
+import { logErrorMessage, successMessage } from "../app/features/userSlice";
 
 const DashboardPosts = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [pages, setPages] = useState(0);
+  const [postIdToDelete, setPostIdToDelete] = useState("");
   const isAdmin = useDecodeToken() || false;
+  const dispatch = useDispatch();
 
+  console.log(postIdToDelete);
   const { data, isLoading, refetch } = useGetBlogsByUserIdQuery({
     currentUser: currentUser._id,
     startIndex: pages,
   });
   const { showModal } = useSelector((state) => state.modal);
+
+  const [deletePosts] = useDeletePostsMutation();
 
   if (isLoading) {
     return <Spinner />;
@@ -36,7 +44,18 @@ const DashboardPosts = () => {
     }
   }
 
-  async function deletePost() {}
+  async function deletePost() {
+    try {
+      deletePosts({ postId: postIdToDelete, userId: currentUser._id });
+      refetch();
+
+      dispatch(successMessage("post deleted successfully"));
+
+      dispatch(closeModal());
+    } catch (error) {
+      dispatch(logErrorMessage(error.message));
+    }
+  }
   return (
     <div className="table-auto overflow-x-scroll  md:mx-auto  p-3">
       {isAdmin?.isAdmin && data?.posts?.length > 0 ? (
@@ -79,17 +98,20 @@ const DashboardPosts = () => {
                 <Table.Cell>{post.category}</Table.Cell>
 
                 <Table.Cell>
-                  <span
+                  <button
                     className="font-medium text-red-500  hover:underline cursor-pointer"
-                    onClick={() => {}}
+                    onClick={() => {
+                      dispatch(openModal());
+                      setPostIdToDelete(post._id);
+                    }}
                   >
                     Delete{" "}
-                  </span>
+                  </button>
                 </Table.Cell>
 
                 <Table.Cell>
                   <Link
-                    to={`/update-post/${post._id}`}
+                    to={`/dashboard/update-post/${post._id}`}
                     className="text-teal-500 hover:underline"
                   >
                     Edit
