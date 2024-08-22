@@ -1,6 +1,11 @@
 import { Sidebar } from "flowbite-react";
 
-import { HiArrowSmRight, HiDocumentText, HiUser } from "react-icons/hi";
+import {
+  HiArrowSmRight,
+  HiDocumentText,
+  HiUser,
+  HiUserGroup,
+} from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import { logErrorMessage, signoutUser } from "../app/features/userSlice";
 import useDecodeToken from "./useDecodeToken";
@@ -43,6 +48,18 @@ function DashboardSidebar({ tab }) {
 
           {isAdmin ? (
             <Sidebar.Item
+              active={tab === "users"}
+              href="/dashboard?tab=users"
+              icon={HiUserGroup}
+              label={"Users"}
+              labelColor="dark"
+            >
+              Users
+            </Sidebar.Item>
+          ) : null}
+
+          {isAdmin ? (
+            <Sidebar.Item
               active={tab === "posts"}
               href="/dashboard?tab=posts"
               icon={HiDocumentText}
@@ -52,7 +69,6 @@ function DashboardSidebar({ tab }) {
               Posts
             </Sidebar.Item>
           ) : null}
-
           <Sidebar.Item
             href="/sign-in"
             className="cursor-pointer"

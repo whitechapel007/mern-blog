@@ -6,6 +6,7 @@ import modalReducer from "./modal/modalSlice";
 
 import { blogsApi } from "./services/blogApi";
 import { authApi } from "./services/auth";
+import { userApi } from "./services/userApi";
 
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   modal: modalReducer,
   [blogsApi.reducerPath]: blogsApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
+  [userApi.reducerPath]: userApi.reducer,
 });
 
 const persistConfig = {
@@ -31,7 +33,8 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false })
       .concat(blogsApi.middleware)
-      .concat(authApi.middleware),
+      .concat(authApi.middleware)
+      .concat(userApi.middleware),
 });
 
 export const persistor = persistStore(store);

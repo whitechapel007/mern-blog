@@ -14,18 +14,17 @@ import {
   updateFailure,
   updateStart,
   updateSuccess,
-  deleteUserStart,
-  deleteUserSuccess,
-  deleteUserFailure,
   logErrorMessage,
   signoutUser,
+  deleteUserSuccess,
 } from "../app/features/userSlice";
 import ErrorModal, { SuccessModal } from "./ErrorModal";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
 import { closeModal, openModal } from "../app/modal/modalSlice";
+import { useDeleteUserMutation } from "../app/services/userApi";
 
 import useDecodeToken from "../components/useDecodeToken";
 import ConfimDeleteModal from "./modals/ConfimDeleteModal";
@@ -45,6 +44,22 @@ function DashboardProfile() {
 
   const dispatch = useDispatch();
 
+  const [deleteUser] = useDeleteUserMutation();
+
+  function handleUserDelete() {
+    deleteUser(currentUser._id)
+      .unwrap()
+      .then(() => {
+        dispatch(successMessage("user deleted successfully"));
+      })
+      .then(() => {
+        dispatch(deleteUserSuccess());
+        dispatch(closeModal());
+      })
+      .catch((error) => {
+        dispatch(logErrorMessage(error.message));
+      });
+  }
   function handleImage(e) {
     const file = e.target.files[0];
     if (file) {
@@ -129,28 +144,10 @@ function DashboardProfile() {
     }
   }
 
-  async function handleUserDelete() {
-    dispatch(closeModal());
-    try {
-      dispatch(deleteUserStart());
-      const res = await fetch(`/api/delete/${currentUser._id}`, {
-        method: "DELETE",
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        dispatch(deleteUserFailure(data.message));
-      } else {
-        dispatch(deleteUserSuccess(data));
-      }
-    } catch (error) {
-      dispatch(deleteUserFailure(error.message));
-    }
-  }
-
   async function handleSignOut() {
     try {
+      navigate("/sign-in");
+      dispatch(signoutUser());
       const res = await fetch("/api/sign-out", {
         method: "POST",
       });
@@ -158,8 +155,6 @@ function DashboardProfile() {
       const data = await res.json();
       if (!res.ok) {
         dispatch(logErrorMessage(data.message));
-      } else {
-        dispatch(signoutUser());
       }
     } catch (error) {
       dispatch(logErrorMessage(error.message));
@@ -264,9 +259,9 @@ function DashboardProfile() {
         >
           Delete Account
         </button>
-        <button className="cursor-pointer" onClick={handleSignOut}>
+        <Link to="/sign-in" className="cursor-pointer" onClick={handleSignOut}>
           Sign out
-        </button>
+        </Link>
       </div>
       <ConfimDeleteModal
         confirmText={"this user"}
