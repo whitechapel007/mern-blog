@@ -5,11 +5,19 @@ import { FaMoon, FaSun } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../app/theme/themeSlice";
 import { logErrorMessage, signoutUser } from "../app/features/userSlice";
+import { useState } from "react";
 
 function Header() {
+  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const path = useLocation().pathname;
+  const { pathname, search } = useLocation();
+
+  const params = new URLSearchParams(search);
+
+  const searchTerm = params.get("searchTerm");
+  console.log(searchTerm);
+
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
 
@@ -33,6 +41,12 @@ function Header() {
       dispatch(logErrorMessage(error.message));
     }
   }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    params.set("searchTerm", searchValue);
+    navigate(`/search?${params.toString()}`);
+  }
   return (
     <Navbar fluid rounded>
       <Navbar.Brand
@@ -46,18 +60,23 @@ function Header() {
         blog
       </Navbar.Brand>
 
-      <form>
-        <TextInput
-          type="text"
-          placeholder="search..."
-          rightIcon={AiOutlineSearch}
-          className="hidden lg:inline"
-        />
+      <form onSubmit={handleSubmit}>
+        <div className="relative">
+          <TextInput
+            type="text"
+            placeholder="search..."
+            className="hidden lg:inline"
+            onChange={(e) => setSearchValue(e.target.value)}
+            value={searchValue}
+          />
+          <button type="submit">
+            <AiOutlineSearch className="absolute top-3 right-2" />
+          </button>
+        </div>
       </form>
       <Button className="w-12 h-10 lg:hidden" color={"gray"} pill>
         <AiOutlineSearch />
       </Button>
-
       <div className="flex gap-2 md:order-2 items-center">
         <Button
           className="w-12 h-10 hidden   sm:flex justify-center"
@@ -102,13 +121,13 @@ function Header() {
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
-        <Navbar.Link href="/" active={path == "/"}>
+        <Navbar.Link href="/" active={pathname == "/"}>
           Home
         </Navbar.Link>
-        <Navbar.Link href="/about" active={path == "/about"}>
+        <Navbar.Link href="/about" active={pathname == "/about"}>
           About
         </Navbar.Link>
-        <Navbar.Link href="/projects" active={path == "/projects"}>
+        <Navbar.Link href="/projects" active={pathname == "/projects"}>
           Projects
         </Navbar.Link>
       </Navbar.Collapse>

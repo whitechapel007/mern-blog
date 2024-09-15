@@ -31,14 +31,6 @@ function SignIn() {
       return;
     }
     try {
-      // dispatch(signInStart());
-      // const response = await fetch("/api/signin", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
 
       const user = await signin(formData);
       if (user.data) {

@@ -1,12 +1,18 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
+const app = express();
+
+
 
 const cookieParser = require("cookie-parser");
 
+
+
 const userRoutes = require("./routes/userRoutes");
 const postRoutes = require("./routes/postRoutes");
-const app = express();
+const commentRoutes = require("./routes/commentRoute");
 
 require("dotenv").config();
 
@@ -35,12 +41,20 @@ mongoose
   });
 app.use(cookieParser());
 
-app.get("/", (req, res) => {
-  res.status(200).json("hello world");
+// app.get("/", (req, res) => {
+//   res.status(200).json("hello world");
+// });
+
+app.use(express.static(path.join(__dirname, "public")));
+
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.use("/api", userRoutes);
 app.use("/api/post", postRoutes);
+app.use("/api/comment", commentRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = Number(err.statusCode) || 500;
@@ -49,6 +63,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).json({ success: false, statusCode, message });
 });
 
-app.listen(3000, () => {
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
   console.log("server is running on port 3000");
 });

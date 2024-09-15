@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { closeModal } from "../../app/modal/modalSlice";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
-import { PropTypes } from "prop-types";
+import  PropTypes  from "prop-types";
 const ConfimDeleteModal = ({ showModal, confirmText, onClick }) => {
   const dispatch = useDispatch();
   return (

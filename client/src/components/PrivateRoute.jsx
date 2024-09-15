@@ -2,7 +2,8 @@ import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
 import useDecodeToken from "../components/useDecodeToken";
-// eslint-disable-next-line react/prop-types
+import { PropTypes } from "prop-types";
+
 function PrivateRoute({ children, adminOnly = false }) {
   const { currentUser } = useSelector((state) => state.user);
   const { isAdmin } = useDecodeToken();
@@ -18,3 +19,9 @@ function PrivateRoute({ children, adminOnly = false }) {
 }
 
 export default PrivateRoute;
+
+// Declare propTypes
+PrivateRoute.propTypes = {
+  children: PropTypes.node.isRequired, // Ensure children is a valid React node and required
+  adminOnly: PropTypes.bool, // adminOnly is a boolean
+};

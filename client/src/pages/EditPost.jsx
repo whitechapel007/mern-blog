@@ -11,7 +11,7 @@ import {
 
 import { app } from "../firebase";
 
-import { logErrorMessage } from "../app/features/userSlice";
+import { logErrorMessage, successMessage } from "../app/features/userSlice";
 
 import { useDispatch } from "react-redux";
 
@@ -51,8 +51,6 @@ function EditPost() {
     return <Spinner />;
   }
 
-
-
   if (error) {
     return dispatch(logErrorMessage(error.message));
   }
@@ -72,13 +70,15 @@ function EditPost() {
         }
       );
 
-      const data = await res.json();
+      const data = await res.json().then(() => {
+        refetch();
+      });
 
       if (!res.ok) {
         dispatch(logErrorMessage(data.message));
         return;
       } else {
-        console.log("successful");
+        dispatch(successMessage("edit successful"));
       }
     } catch (error) {
       dispatch(logErrorMessage(error.message));

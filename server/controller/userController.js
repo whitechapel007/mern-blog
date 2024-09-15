@@ -192,8 +192,8 @@ async function updateUser(req, res, next) {
 }
 
 async function deleteUser(req, res, next) {
-  if (req.user.id !== req.params.userId) {
-    return next(errorHandler(403, "you are not allowed to delete this user "));
+  if (!req.user.isAdmin && req.user.id !== req.params.userId) {
+    return next(errorHandler(403, "you are not allowed to delete this user"));
   }
   try {
     await User.findByIdAndDelete(req.params.userId);
@@ -252,6 +252,19 @@ async function getUsers(req, res, next) {
   }
 }
 
+async function getIndividualUser(req, res, next) {
+  try {
+    const user = await User.findById(req.params.userId).select("-password");
+    if (!user) {
+      return next(errorHandler(404, "user not found"));
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   signup,
   signin,
@@ -260,4 +273,5 @@ module.exports = {
   deleteUser,
   signOutUser,
   getUsers,
+  getIndividualUser,
 };

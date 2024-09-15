@@ -5,32 +5,33 @@ import { useState, useEffect } from "react";
 import { closeModal, openModal } from "../app/modal/modalSlice";
 import { logErrorMessage, successMessage } from "../app/features/userSlice";
 import {
-  useDeleteUserMutation,
-  useGetUsersQuery,
-} from "../app/services/userApi";
+  useDeleteCommentsMutation,
+  useGetAllCommentsQuery,
+} from "../app/services/commentApi";
 
 import ConfirmDeleteModal from "./modals/ConfimDeleteModal";
 
-import { TableHead, UserRow } from "./TableHead";
+import { TableCommentHead, UserRow } from "./TableCommentHead";
 
-const DashboardUsers = () => {
+const DashboardComments = () => {
   const [pages, setPages] = useState(0);
-  const [userIdToDelete, setUserIdToDelete] = useState("");
+  const [commentIdToDelete, setCommentIdToDelete] = useState("");
   const isAdmin = useDecodeToken() || false;
   const dispatch = useDispatch();
   const { showModal } = useSelector((state) => state.modal);
 
-  const { data, isLoading, refetch } = useGetUsersQuery(pages);
-  const [deleteUser] = useDeleteUserMutation();
+  const { data, isLoading, refetch } = useGetAllCommentsQuery(pages);
+  const [deleteComments] = useDeleteCommentsMutation();
 
   useEffect(() => {
     refetch();
   }, []);
-  const deleteUsers = () => {
-    deleteUser(userIdToDelete)
+
+  const deleteComment = () => {
+    deleteComments(commentIdToDelete)
       .unwrap()
       .then(() => {
-        dispatch(successMessage("User deleted successfully"));
+        dispatch(successMessage("Comment deleted successfully"));
         refetch(); // Ensure refetch only after deletion is successful
         dispatch(closeModal());
       })
@@ -56,30 +57,28 @@ const DashboardUsers = () => {
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3">
       <Table hoverable className="shadow-md">
-        <TableHead />
-        {isAdmin?.isAdmin && data?.users?.length > 0 ? (
-          data.users.map((user) => (
-            <UserRow
-              key={user._id}
-              user={user}
-              onDelete={() => {
-                dispatch(openModal());
-                setUserIdToDelete(user._id);
-              }}
-            />
-          ))
-        ) : (
-          <p>No users available</p>
-        )}
+        <TableCommentHead />
+        {isAdmin?.isAdmin && data?.comments?.length > 0
+          ? data.comments.map((comment) => (
+              <UserRow
+                key={comment._id}
+                comment={comment}
+                onDelete={() => {
+                  dispatch(openModal());
+                  setCommentIdToDelete(comment._id);
+                }}
+              />
+            ))
+          : "No comments yet"}
       </Table>
       <ConfirmDeleteModal
         showModal={showModal}
         confirmText={"this user"}
-        onClick={deleteUsers}
+        onClick={deleteComment}
       />
 
       <div className="text-center">
-        {!(data?.users.length < 10) && (
+        {!(data?.comments.length < 10) && (
           <button className="w-full text-teal-500 " onClick={handleShowMore}>
             show more
           </button>
@@ -89,4 +88,4 @@ const DashboardUsers = () => {
   );
 };
 
-export default DashboardUsers;
+export default DashboardComments;

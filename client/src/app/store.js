@@ -10,6 +10,7 @@ import { userApi } from "./services/userApi";
 
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import { commentsApi } from "./services/commentApi";
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   [blogsApi.reducerPath]: blogsApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
   [userApi.reducerPath]: userApi.reducer,
+  [commentsApi.reducerPath]: commentsApi.reducer,
 });
 
 const persistConfig = {
@@ -34,7 +36,8 @@ export const store = configureStore({
     getDefaultMiddleware({ serializableCheck: false })
       .concat(blogsApi.middleware)
       .concat(authApi.middleware)
-      .concat(userApi.middleware),
+      .concat(userApi.middleware)
+      .concat(commentsApi.middleware),
 });
 
 export const persistor = persistStore(store);

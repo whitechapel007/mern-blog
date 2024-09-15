@@ -11,13 +11,33 @@ export const blogsApi = createApi({
       query: ({ currentUser, startIndex }) => {
         return `/get-posts?userId=${currentUser}&startIndex=${startIndex}`;
       },
-      providesTags: ["posts"],
+    }),
+
+    getAllBlogPosts: builder.query({
+      query: () => {
+        return `/get-posts`;
+      },
     }),
     getPostsById: builder.query({
       query: (postId) => {
         return `/get-posts?postId=${postId}`;
       },
-      providesTags: ["posts"],
+    }),
+    getPostsBySlug: builder.query({
+      query: (postSlug) => {
+        return `/get-posts?slug=${postSlug}`;
+      },
+    }),
+
+    getPostsByQueries: builder.query({
+      query: (queries) => {
+        return `/get-posts?${queries}`;
+      },
+    }),
+    getPostsByLastThreee: builder.query({
+      query: () => {
+        return `/get-posts?limit=3`;
+      },
     }),
 
     deletePosts: builder.mutation({
@@ -25,7 +45,6 @@ export const blogsApi = createApi({
         url: `/delete-posts/${postId}/${userId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["posts"],
     }),
   }),
 });
@@ -36,4 +55,8 @@ export const {
   useGetBlogsByUserIdQuery,
   useDeletePostsMutation,
   useGetPostsByIdQuery,
+  useGetPostsBySlugQuery,
+  useGetPostsByLastThreeeQuery,
+  useGetAllBlogPostsQuery,
+  useGetPostsByQueriesQuery,
 } = blogsApi;

@@ -9,16 +9,18 @@ export const userApi = createApi({
   endpoints: (builder) => ({
     getUsers: builder.query({
       query: (startIndex) => `/getUsers?startIndex=${startIndex}`,
-      providesTags: ["user"],
+    }),
+    getEachUser: builder.query({
+      query: (userId) => `/${userId}`,
     }),
     deleteUser: builder.mutation({
       query: (userId) => ({
         url: `/delete/${userId}`,
         method: "DELETE",
-        providesTags: ["user"],
       }),
     }),
   }),
 });
 
-export const { useGetUsersQuery, useDeleteUserMutation } = userApi;
+export const { useGetUsersQuery, useDeleteUserMutation, useGetEachUserQuery } =
+  userApi;

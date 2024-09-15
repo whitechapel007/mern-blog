@@ -18,7 +18,7 @@ import {
   signoutUser,
   deleteUserSuccess,
 } from "../app/features/userSlice";
-import ErrorModal, { SuccessModal } from "./ErrorModal";
+
 import { Link, useNavigate } from "react-router-dom";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -209,8 +209,6 @@ function DashboardProfile() {
           />
         </button>
 
-        <ErrorModal />
-        <SuccessModal />
         <TextInput
           type="text"
           id="username"

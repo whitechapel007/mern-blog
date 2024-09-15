@@ -1,7 +1,9 @@
 import { Sidebar } from "flowbite-react";
 
 import {
+  HiAnnotation,
   HiArrowSmRight,
+  HiChartPie,
   HiDocumentText,
   HiUser,
   HiUserGroup,
@@ -9,8 +11,8 @@ import {
 import { useDispatch } from "react-redux";
 import { logErrorMessage, signoutUser } from "../app/features/userSlice";
 import useDecodeToken from "./useDecodeToken";
+import PropTypes from "prop-types";
 
-// eslint-disable-next-line react/prop-types
 function DashboardSidebar({ tab }) {
   const { isAdmin } = useDecodeToken();
 
@@ -69,6 +71,28 @@ function DashboardSidebar({ tab }) {
               Posts
             </Sidebar.Item>
           ) : null}
+
+          {isAdmin ? (
+            <Sidebar.Item
+              active={tab === "comments"}
+              href="/dashboard?tab=comments"
+              icon={HiAnnotation}
+              labelColor="dark"
+            >
+              Comments
+            </Sidebar.Item>
+          ) : null}
+
+          {isAdmin ? (
+            <Sidebar.Item
+              active={tab === "Overview"}
+              href="/dashboard?tab=overview"
+              icon={HiChartPie}
+              labelColor="dark"
+            >
+              Overview
+            </Sidebar.Item>
+          ) : null}
           <Sidebar.Item
             href="/sign-in"
             className="cursor-pointer"
@@ -83,4 +107,7 @@ function DashboardSidebar({ tab }) {
   );
 }
 
+DashboardSidebar.propTypes = {
+  tab: PropTypes.string.isRequired,
+};
 export default DashboardSidebar;

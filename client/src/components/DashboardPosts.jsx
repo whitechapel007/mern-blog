@@ -1,6 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 
-import { useGetBlogsByUserIdQuery } from "../app/services/blogApi";
+import {
+  useGetBlogsByUserIdQuery,
+  useDeletePostsMutation,
+} from "../app/services/blogApi";
 
 import useDecodeToken from "./useDecodeToken";
 import { Table, Spinner } from "flowbite-react";
@@ -8,17 +11,18 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import ConfimDeleteModal from "./modals/ConfimDeleteModal";
 import { closeModal, openModal } from "../app/modal/modalSlice";
-import { useDeletePostsMutation } from "../app/services/blogApi";
+
 import { logErrorMessage, successMessage } from "../app/features/userSlice";
+import { useScroll } from "./useScrollToTop";
 
 const DashboardPosts = () => {
+  useScroll();
   const { currentUser } = useSelector((state) => state.user);
   const [pages, setPages] = useState(0);
   const [postIdToDelete, setPostIdToDelete] = useState("");
   const isAdmin = useDecodeToken() || false;
   const dispatch = useDispatch();
 
-  console.log(postIdToDelete);
   const { data, isLoading, refetch } = useGetBlogsByUserIdQuery({
     currentUser: currentUser._id,
     startIndex: pages,
@@ -88,7 +92,7 @@ const DashboardPosts = () => {
                 </Table.Cell>
                 <Table.Cell>
                   <Link
-                    to={`/post${post.slug}`}
+                    to={`/post/${post.slug}`}
                     className="font-medium text-gray-900  dark:text-white"
                   >
                     {post.title}
