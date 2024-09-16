@@ -108,7 +108,7 @@ const Search = () => {
               <Spinner />
             </p>
           )}
-          {data.posts.map((eachPost, idx) => (
+          {data?.posts?.map((eachPost, idx) => (
             <PostCard post={eachPost} key={idx} />
           ))}
         </div>
